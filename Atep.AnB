@@ -1,0 +1,17 @@
+Protocol: KeyEx_UpdatedWithNonces
+Types: Agent A, B, S; Number NA, NB; Symmetric_key KAB;
+Knowledge:
+    A: A, B, S;
+    B: A, B, S;
+    S: A, S;
+Actions:
+    A -> S: A, B, NA
+    S -> A: {KAB, NA}inv(S)
+    A -> B: A, {KAB, NA, NB}inv(A)
+    B -> A: {NB}inv(B)
+Goals:
+    A authenticates S on KAB, NA
+    B authenticates A on KAB, NA, NB
+    KAB secret between A, B
+    NA secret between A, S
+    NB secret between A, B
