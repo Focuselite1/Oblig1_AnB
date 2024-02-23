@@ -1,0 +1,19 @@
+Protocol: IoT
+Types: Agent s, H, C; Number RNDs, RNDh, RNDc; Symmetric_key HSK, HCK;
+Knowledge:
+    s: s, H, C;
+    H: s, H, C;
+    C: H, C;
+Actions:
+    s -> H: AuthInit(s, H, RNDs)
+    H -> s: AuthNext(RNDh, {s, H, RNDs, RNDh}HSK)
+    s -> H: AuthOKs(RNDc, {s, H, RNDs, RNDh, RNDc}HSK)
+    H -> C: AuthInit(H, C, RNDc)
+    C -> H: AuthResp({H, C, RNDc}HCK)
+Goals:
+    s authenticates H on HSK, RNDs, RNDh
+    H authenticates s on HSK, RNDs, RNDh, RNDc
+    H authenticates C on HCK, RNDc
+    C authenticates H on HCK, RNDc
+    HSK secret between s, H
+    HCK secret between H, C
