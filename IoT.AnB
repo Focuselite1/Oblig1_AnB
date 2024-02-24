@@ -1,0 +1,24 @@
+Protocol: Iot_Hub
+
+
+Types:
+Agent H,C,s;
+Number IDs,IDh,IDc;
+Symmetric_key KHC,KHS;
+Function sk,mac;
+
+
+Knowledge:
+  H: s,C,H,sk(IDs,IDh),sk(IDh,IDc)
+  C: C,H,sk(IDc,IDh)
+  s: s,C,H,sk(IDs,IDh),sk(IDh,IDc)
+
+Actions:
+
+ 
+Goals: 
+H authenticates s on KHS,IDs
+C authenticates H on KHC,IDh
+## s authenticates H on KHS,IDh ??
+KHC secret between H,C,s
+KHS secret between H,s
