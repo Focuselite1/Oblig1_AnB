@@ -1,24 +1,26 @@
-Protocol: Iot_Hub
-
-
+Protocol: IoTProt
 Types:
-Agent H,C,s;
-Number IDs,IDh,IDc;
-Symmetric_key KHC,KHS;
-Function sk,mac;
-
+  Agent C,H,s;
+  Number IDs, IDh, IDc, RNDs, RNDh, RNDc;
+  Symmetric_key HSK, HCK;
+  Function MACHSK, MACHCK;
 
 Knowledge:
-  H: s,C,H,sk(IDs,IDh),sk(IDh,IDc)
-  C: C,H,sk(IDc,IDh)
-  s: s,C,H,sk(IDs,IDh),sk(IDh,IDc)
+  H: H,C,s,sk(IDs, IDh), sk(IDh, IDc), HSK, HCK;
+  C: C,H,sk(IDc, IDh), HCK;
+  s: s,C,H,sk(IDs, IDh), sk(IDh, IDc), HSK;
 
 Actions:
+s -> H: AuthInit(IDs, IDh, RNDs)
+H -> S: AuthNext(RNDh, MACHSK(HSK, IDs, IDh, RNDs, RNDh))
+s -> H: AuthOKs(RNDc, MACHSK(HSK, IDs, IDh, RNDs, RNDh, RNDc))
+H -> C: AuthInit(IDh, IDc, RNDc)
+C -> H: AuthResp(MACHCK(HCK, IDh, IDc, RNDc))
 
- 
-Goals: 
-H authenticates s on KHS,IDs
-C authenticates H on KHC,IDh
-## s authenticates H on KHS,IDh ??
-KHC secret between H,C,s
-KHS secret between H,s
+Goals:
+H authenticates s on HSK, RNDs
+s authenticates H on HSK, RNDh
+H authenticates C on HCK, RNDc
+C authenticates H on HCK, RNDc
+
+
