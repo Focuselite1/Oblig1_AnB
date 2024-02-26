@@ -16,7 +16,8 @@ H -> S: AuthNext(RNDh, MACHSK(HSK, IDs, IDh, RNDs, RNDh))
 s -> H: AuthOKs(RNDc, MACHSK(HSK, IDs, IDh, RNDs, RNDh, RNDc))
 H -> C: AuthInit(IDh, IDc, RNDc)
 C -> H: AuthResp(MACHCK(HCK, IDh, IDc, RNDc))
-##KDF?
+
+##KDF? SPØR GEIR
 ## Syntax KDF funskjoner??
 #KDFHSK(IDs,IDh,RNDs,RNDh,RNDc) -> SHCK; # Server-Hub Context Key; used to derive session keys
 #KDFHCK(IDh,IDc,RNDc) -> HCCK; # Hub-Client Context Key; used to derive session keys
