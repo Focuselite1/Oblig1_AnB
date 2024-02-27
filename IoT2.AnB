@@ -1,0 +1,24 @@
+Protocol: IoTProt
+Types:
+  Agent C, H, s;
+  Number IDh, IDc, IDs, RNDs, RNDh, RNDc;
+  Symmetric_key HSK, HCK;
+  Function MACHSK, MACHCK;
+ 
+Knowledge:
+  H: H, C, s;
+  C: C, H;
+  s: s, H;
+ 
+Actions:
+  s -> H : AuthInit(IDs, IDh, RNDs)
+  H -> s : AuthNext(RNDh, MACHSK(IDs, IDh, RNDs, RNDh))
+  s -> H : AuthOKs(RNDc, MACHSK(IDs, IDh, RNDs, RNDh, RNDc))
+  H -> C : AuthInit(IDh, IDc, RNDc)
+  C -> H : AuthResp(MACHCK(IDh, IDc, RNDc))
+ 
+Goals:
+  H authenticates s on HSK, RNDs, RNDh
+  s authenticates H on HSK, RNDs, RNDh
+  H authenticates C on HCK, RNDc
+  C authenticates H on HCK, RNDc

@@ -3,22 +3,20 @@ Types:
   Agent C,H,s;
   Number IDs, IDh, IDc, RNDs, RNDh, RNDc;
   Symmetric_key HSK, HCK;
-  Function MACHSK, MACHCK,KDF;
+  Function MACHSK, MACHCK,KDF; ##Små bokstaver
 
 Knowledge:
-  H: H,C,s,sk(IDs, IDh), sk(IDh, IDc), HSK, HCK;
-  C: C,H,sk(IDc, IDh), HCK;
-  s: s,C,H,sk(IDs, IDh), sk(IDh, IDc), HSK;
+  H: H,C,s,sk(s, H), sk(H, C); ##KDF 
+  C: C,H,sk(C, H);
+  s: s,C,H,sk(s, H), sk(H, C);
 
 Actions:
-s -> H: AuthInit(IDs, IDh, RNDs)
+s -> H: AuthInit(IDs, IDh, RNDs) ##Fjern AuthInt ++
 H -> S: AuthNext(RNDh, MACHSK(HSK, IDs, IDh, RNDs, RNDh))
 s -> H: AuthOKs(RNDc, MACHSK(HSK, IDs, IDh, RNDs, RNDh, RNDc))
 H -> C: AuthInit(IDh, IDc, RNDc)
 C -> H: AuthResp(MACHCK(HCK, IDh, IDc, RNDc))
 
-##KDF? SPØR GEIR
-## Syntax KDF funskjoner??
 #KDFHSK(IDs,IDh,RNDs,RNDh,RNDc) -> SHCK; # Server-Hub Context Key; used to derive session keys
 #KDFHCK(IDh,IDc,RNDc) -> HCCK; # Hub-Client Context Key; used to derive session keys
 
