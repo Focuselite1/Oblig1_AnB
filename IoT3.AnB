@@ -1,29 +1,35 @@
 Protocol: ATEP
 ##Protokoll inspirert av GSM AKA og TLS
 Types:
-  Agent C,H,s;
-  Number RANDs,RANDh,RANDc;
-  Symmetric_key HCK;
-  Function sk,mac,kdf;
+ ## Definerer grunnleggende elementer som agenter, nøkler, og funksjoner nødvendig for protokollen.
+  Agent C,H,s; ##C er IoT enheten, H er Huben og s er serveren
+  Number RANDs,RANDh,RANDc; ##Random nouncer
+  Function sk,mac,kdf; ##Shared Key,Message Authentication Code, Key derivation Function
 
 Knowledge:
+## Fastsetter initial kunnskap for hver agent, inkludert pre-delte nøkler og mac/kdf funksjoner for autentisering og nøkkel-derivasjon.
     H: C,H,s,sk(H,s),sk(H,C),mac,kdf;
     C: C,H,sk(H,C),mac,kdf;
     s: C,H,s,sk(C,s),sk(H,s),mac,kdf;
 ##Hindring av at en part kan kommunisere med seg selv    
 where H!=C
 Actions:
+## Definerer stegene i autentiserings- og nøkkelavtaleprosessen mellom agenter.
 s->H: RANDs
 H->s: mac(sk(H,s),RANDs,RANDh),RANDh
+## Server bekrefter Hubs autentisitet ved å validere MAC som inneholder både Server og Hubs tilfeldige tall.
 s->H: mac(sk(H,s),RANDh,RANDs)
 H->C: RANDh
 C->H: mac(sk(H,C),RANDh,RANDc),RANDc
+## Hub bekrefter Klients autentisitet og etablerer en nøkkelavtale ved å validere MAC som inneholder Hubs og Klients tilfeldige tall.
 H->C: mac(sk(H,C),RANDc,RANDh)
 
-Goals:
-s authenticates H on mac(sk(H,s),RANDs,RANDh)
-H authenticates s on mac(sk(H,s),RANDh,RANDs)
-kdf(sk(H,s),RANDs,RANDh) secret between H,s
-H authenticates C on mac(sk(H,C),RANDc,RANDh)
-C authenticates H on mac(sk(H,C),RANDh,RANDc)
-kdf(sk(H,C),RANDh,RANDc) secret between H,C
+Goals: 
+  ## Definerer sikkerhetsmål for protokollen, inkludert gjensidig autentisering mellom agenter 
+  ##og sikker nøkkelutveksling for kryptert kommunikasjon.
+s authenticates H on mac(sk(H,s),RANDs,RANDh) ## Server autentiserer Hub basert på en felles MAC.
+H authenticates s on mac(sk(H,s),RANDh,RANDs) ## Hub autentiserer Server ved å validere den mottatte MAC.
+kdf(sk(H,s),RANDs,RANDh) secret between H,s ## Etablerer en hemmelig nøkkel mellom Hub og Server gjennom nøkkel-derivasjon.
+H authenticates C on mac(sk(H,C),RANDc,RANDh) ## Hub autentiserer Klient ved å validere den mottatte MAC.
+C authenticates H on mac(sk(H,C),RANDh,RANDc) ## Klient autentiserer Hub gjennom en felles MAC.
+kdf(sk(H,C),RANDh,RANDc) secret between H,C ## Etablerer en hemmelig nøkkel mellom Hub og Klient for videre sikker kommunikasjon.
