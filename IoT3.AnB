@@ -1,0 +1,29 @@
+Protocol: ATEP
+##Protokoll inspirert av GSM AKA og TLS
+Types:
+  Agent C,H,s;
+  Number RANDs,RANDh,RANDc;
+  Symmetric_key HCK;
+  Function sk,mac,kdf;
+
+Knowledge:
+    H: C,H,s,sk(H,s),sk(H,C),mac,kdf;
+    C: C,H,sk(H,C),mac,kdf;
+    s: C,H,s,sk(C,s),sk(H,s),mac,kdf;
+##Hindring av at en part kan kommunisere med seg selv    
+where H!=C
+Actions:
+s->H: RANDs
+H->s: mac(sk(H,s),RANDs,RANDh),RANDh
+s->H: mac(sk(H,s),RANDh,RANDs)
+H->C: RANDh
+C->H: mac(sk(H,C),RANDh,RANDc),RANDc
+H->C: mac(sk(H,C),RANDc,RANDh)
+
+Goals:
+s authenticates H on mac(sk(H,s),RANDs,RANDh)
+H authenticates s on mac(sk(H,s),RANDh,RANDs)
+kdf(sk(H,s),RANDs,RANDh) secret between H,s
+H authenticates C on mac(sk(H,C),RANDc,RANDh)
+C authenticates H on mac(sk(H,C),RANDh,RANDc)
+kdf(sk(H,C),RANDh,RANDc) secret between H,C

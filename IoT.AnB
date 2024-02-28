@@ -3,7 +3,7 @@ Types:
   Agent C,H,s;
   Number IDs, IDh, IDc, RNDs, RNDh, RNDc;
   Symmetric_key HSK, HCK;
-  Function MACHSK, MACHCK,KDF; ##Små bokstaver
+  Function sk,machck, machsk,kdfHSK,kdfHCK;
 
 Knowledge:
   H: H,C,s,sk(s, H), sk(H, C); ##KDF 
@@ -11,11 +11,11 @@ Knowledge:
   s: s,C,H,sk(s, H), sk(H, C);
 
 Actions:
-s -> H: AuthInit(IDs, IDh, RNDs) ##Fjern AuthInt ++
-H -> S: AuthNext(RNDh, MACHSK(HSK, IDs, IDh, RNDs, RNDh))
-s -> H: AuthOKs(RNDc, MACHSK(HSK, IDs, IDh, RNDs, RNDh, RNDc))
-H -> C: AuthInit(IDh, IDc, RNDc)
-C -> H: AuthResp(MACHCK(HCK, IDh, IDc, RNDc))
+s -> H: (IDs, IDh, RNDs)
+H -> S: (RNDh, MACHSK(HSK, IDs, IDh, RNDs, RNDh))
+s -> H: (RNDc, MACHSK(HSK, IDs, IDh, RNDs, RNDh, RNDc))
+H -> C: (IDh, IDc, RNDc)
+C -> H: (MACHCK(HCK, IDh, IDc, RNDc))
 
 #KDFHSK(IDs,IDh,RNDs,RNDh,RNDc) -> SHCK; # Server-Hub Context Key; used to derive session keys
 #KDFHCK(IDh,IDc,RNDc) -> HCCK; # Hub-Client Context Key; used to derive session keys

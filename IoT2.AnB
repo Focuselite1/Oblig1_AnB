@@ -1,24 +1,30 @@
 Protocol: IoTProt
+##Inspirert av Lecture 5 KeyEx5.B
 Types:
-  Agent C, H, s;
-  Number IDh, IDc, IDs, RNDs, RNDh, RNDc;
-  Symmetric_key HSK, HCK;
-  Function MACHSK, MACHCK;
- 
+  Agent C,H,s;
+  Number NC,NH;
+  Symmetric_key HCK;
+  Function sk,kdf,mac;
+
 Knowledge:
-  H: H, C, s;
-  C: C, H;
-  s: s, H;
- 
+  H: C,H,s,sk(H,s),mac,kdf;
+  C: C,H,sk(C,s),mac,kdf;
+  s: C,H,s,sk(C,s),sk(H,s),mac,kdf;
+
+##Sikkring mot at Agenten snakker med seg selv
+where H!=C
+
 Actions:
-  s -> H : AuthInit(IDs, IDh, RNDs)
-  H -> s : AuthNext(RNDh, MACHSK(IDs, IDh, RNDs, RNDh))
-  s -> H : AuthOKs(RNDc, MACHSK(IDs, IDh, RNDs, RNDh, RNDc))
-  H -> C : AuthInit(IDh, IDc, RNDc)
-  C -> H : AuthResp(MACHCK(IDh, IDc, RNDc))
- 
+##Lager NC
+C->H: H,C,NC
+H->s: H,C,NH,NC
+##S genererer key HCK
+s->H:{|HCK,H,C,NH|}sk(H,s),{|HCK,H,C,NC|}sk(C,s)
+H->C:{|HCK,H,C,NC|} sk(C,s)
+
+
 Goals:
-  H authenticates s on HSK, RNDs, RNDh
-  s authenticates H on HSK, RNDs, RNDh
-  H authenticates C on HCK, RNDc
-  C authenticates H on HCK, RNDc
+
+H authenticates s on HCK,H
+C authenticates s on HCK,C
+HCK secret between H,C,s
