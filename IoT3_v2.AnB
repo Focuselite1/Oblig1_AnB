@@ -1,0 +1,27 @@
+Protocol: ATEP
+
+Types:
+Agent C,H,s;
+Number RANDs,RANDh,RANDc, CHALLENGEs, CHALLENGEh, CHALLENGEc;
+Function sk,mac,kdf;
+
+Knowledge:
+H: C,H,s,sk(H,s),sk(H,C),mac,kdf;
+C: C,H,sk(H,C),mac,kdf;
+s: C,H,s,sk(H,s),mac,kdf;
+
+Actions:
+s->H: RANDs,CHALLENGEs
+H->s: mac(sk(H,s),RANDs,RANDh),RANDh,mac(sk(H,s),CHALLENGEs),CHALLENGEh
+s->H: mac(sk(H,s),RANDh,RANDs),RANDs,mac(sk(H,s),CHALLENGEh) 
+H->C: RANDh, CHALLENGEh
+C->H: mac(sk(H,C),RANDh,RANDc),RANDc, mac(sk(H,C),CHALLENGEh)
+H->C: mac(sk(H,C),RANDc,RANDh), mac(sk(H,C),CHALLENGEc)
+
+Goals:
+s authenticates H on mac(sk(H,s),RANDs,RANDh)
+H authenticates s on mac(sk(H,s),RANDh,RANDs)
+kdf(sk(H,s),RANDs,RANDh) secret between H,s
+H authenticates C on mac(sk(H,C),RANDc,RANDh)
+C authenticates H on mac(sk(H,C),RANDh,RANDc)
+kdf(sk(H,C),RANDh,RANDc) secret between H,C
