@@ -2,35 +2,40 @@ Protocol: ATEP
 
 Types:
 Agent C,H,s,as,tgs;
-Number IDs,TGTs,Ts;
-Symmetric_key Sask,AsTgK,HuTgK;
+Number IDs,IDh,IDc,IDas,IDtgs,TGTs,TGTh,Ts,Th;
+Symmetric_key SasK,HasK,AsTgK,HuTgK,IuTgK,HCK,HSK;
 Function sk,mac,kdf,km;
 
 Knowledge:
-H: C,H,s,tgs,as,HuTgK;
-C: C,H,tgs;
-s: H,s,as,Sask;
-as:s,H,as,tgs,Sask,AsTgK;
-tgs:H,C,tgs,as,AsTgK,HuTgK;
+H: C,H,s,tgs,as,sk(H,as),sk(tgs,H);
+C: C,H,tgs,sk(tgs,C);
+s: H,s,as,sk(s,as);
+as:s,H,as,tgs,sk(s,as),sk(H,as),sk(as,tgs);
+tgs:H,C,tgs,as,sk(tgs,H),sk(tgs,C),sk(as,tgs);
 Actions:
 ##Server -> Hub Token
-s->as:IDs,{IDs}Sask
-as->s:{TGTs}Sask
-s->tgs:{TGTs}AsTgK
+s->as:{|SasK,s,as|}sk(s,as),{IDs}SasK
+as->tgs:{|AsTgK,as,tgs|}sk(as,tgs),{IDas}AsTgK
 tgs->as:{TGTs}AsTgK
-as->tgs:{Ts}AsTgK
-tgs->s:{Ts}HuTgK
-s->H:{Ts}HuTgK
+as->s:{TGTs}AsTgK
+s->tgs:{TGTs}AsTgK
+tgs->s:{|HuTgK,tgs,H|}sk(tgs,H),{Ts}HuTgK
+s->H:{IDh,{Ts}HuTgK}HSK
 
+##Hub -> IOT Token
+H->as:{|HasK,H,as|}sk(H,as)
+as->tgs:{|AsTgK,as,tgs|}sk(as,tgs),{IDas}AsTgK
+tgs->as:{TGTh}AsTgK
+as->H:{TGTh}AsTgK
+H->tgs:{TGTh}AsTgK
+tgs->H:{|IuTgK,tgs,C|}sk(tgs,C),{Th}IuTgK
+H->C:{IDc,{Th}IuTgK}HCK
 
 Goals:
-s authenticates as on {IDs}Sask
-as authenticates s on {TGTs}Sask
-s authenticates tgs on {TGTs}AsTgK
-tgs authenticates as on {TGTs}AsTgK
-as authenticates tgs on {Ts}AsTgK
-tgs authenticates s on {Ts}HuTgK
-s authenticates H on {Ts}HuTgK
-Sask secret between s,as
-AsTgK secret between as,tgs
-HuTgK secret between tg
+s authenticates as on {|SasK,s,as|}sk(s,as)
+as authenticates tgs on {|AsTgK,as,tgs|}sk(as,tgs)
+tgs authenticates s on {TGTs}AsTgK
+s authenticates H on {IDh,{Ts}HuTgK}HSK
+SasK secret between s, as
+AsTgK secret  between as, tgs
+HuTgK secret  between tgs
