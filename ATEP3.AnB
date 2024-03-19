@@ -1,0 +1,36 @@
+Protocol: ATEP
+
+Types:
+Agent C,H,s,as,tgs;
+Number IDs,TGTs,Ts;
+Symmetric_key Sask,AsTgK,HuTgK;
+Function sk,mac,kdf,km;
+
+Knowledge:
+H: C,H,s,tgs,as,HuTgK;
+C: C,H,tgs;
+s: H,s,as,Sask;
+as:s,H,as,tgs,Sask,AsTgK;
+tgs:H,C,tgs,as,AsTgK,HuTgK;
+Actions:
+##Server -> Hub Token
+s->as:IDs,{IDs}Sask
+as->s:{TGTs}Sask
+s->tgs:{TGTs}AsTgK
+tgs->as:{TGTs}AsTgK
+as->tgs:{Ts}AsTgK
+tgs->s:{Ts}HuTgK
+s->H:{Ts}HuTgK
+
+
+Goals:
+s authenticates as on {IDs}Sask
+as authenticates s on {TGTs}Sask
+s authenticates tgs on {TGTs}AsTgK
+tgs authenticates as on {TGTs}AsTgK
+as authenticates tgs on {Ts}AsTgK
+tgs authenticates s on {Ts}HuTgK
+s authenticates H on {Ts}HuTgK
+Sask secret between s,as
+AsTgK secret between as,tgs
+HuTgK secret between tg
