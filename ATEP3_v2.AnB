@@ -1,0 +1,20 @@
+Protocol: ATEP
+
+Types:
+Agent C,H;
+Number IDh,IDc,Th,KM;
+Symmetric_key HCK;
+Function sk,mac,kdf;
+
+Knowledge:
+H: C,H,sk(H,C);
+C: C,H,sk(H,C);
+Actions:
+##KERBEROS EXCHANGE                
+H->C:{|KM|}sk(H,C)
+C->H:{|HCK,IDc,KM|}sk(H,C)
+H->C:{|IDc,IDh,Th,KM|}HCK
+Goals:
+C authenticates H on HCK
+##Bør fylles på flere GOALS HER
+
