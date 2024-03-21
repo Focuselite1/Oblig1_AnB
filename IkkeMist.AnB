@@ -4,18 +4,20 @@ Types:
 Agent C,H;
 Number IDh,IDc,Th,KM;
 Symmetric_key HCK;
-Function sk,mac,kdf;
+Function sk;
 
 Knowledge:
-H: C,H,sk(H,C),mac;
-C: C,H,sk(H,C),mac;
+H: C,H,sk(H,C);
+C: C,H,sk(H,C);
 Actions:
 ##KERBEROS EXCHANGE                
-H->C:{|HCK|}sk(H,C)
-C->H:{|IDc|}HCK
+H->C:{|KM|}sk(H,C)
+C->H:{|HCK,IDc,KM|}sk(H,C)
 H->C:{|IDc,IDh,Th,KM|}HCK
-
 Goals:
 C authenticates H on HCK
-
+H authenticates C on HCK
+HCK secret between H,C
+KM secret between H,C
+##Bør fylles på flere GOALS HER
 
