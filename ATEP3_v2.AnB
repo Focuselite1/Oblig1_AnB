@@ -1,23 +1,14 @@
 Protocol: ATEP
-
 Types:
-Agent C,H;
-Number IDh,IDc,Th;
-Symmetric_key HCK,KM;
-Function sk;
-
+    Agent H, C;
+    Number Th,IDc;
+    Symmetric_key KM;
+    Function pk, inv;
 Knowledge:
-H: C,H,sk(H,C);
-C: C,H,sk(H,C);
+    H : H,C,pk(C);
+    C : C,inv(pk(C));
 Actions:
-##KERBEROS EXCHANGE                
-H->C:{|KM|}sk(H,C)
-C->H:{|HCK,IDc|}KM
-H->C:{|IDc,IDh,Th,KM|}HCK
+    H -> C : {Th, IDc, KM}pk(C)
 Goals:
-C authenticates H on HCK
-H authenticates C on HCK
-HCK secret between H,C
-KM secret between H,C
-##Bør fylles på flere GOALS HER
-
+    C authenticates H on KM
+    KM secret between H, C
