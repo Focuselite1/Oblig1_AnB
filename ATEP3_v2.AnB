@@ -1,14 +1,17 @@
-Protocol: ATEP
+Protocol: ATEP3                
 Types:
-    Agent H, C;
-    Number Th,IDc;
-    Symmetric_key KM;
-    Function pk, inv;
+    Agent H,C;                 ## H står for Hub og C står for Klient.
+    Number Th,IDc;             ## Th er et tidsstempel og IDc er iden til C.
+    Symmetric_key KM;          ## KM fra Kerberos utvekslingen
+    Function pk, inv;          ## Kryptografiske funksjoner,pk for kryptering med offentlig nøkkel, inv for dekryptering.
+
 Knowledge:
-    H : H,C,pk(C);
-    C : C,inv(pk(C));
+    H : H,C,pk(C);             ## Hub'en kjenner sin egen identitet, Klientens identitet, og Klientens delte offentlige nøkkel, beskrevet i ATEP#3 som HCK
+    C : C,inv(pk(C));          ## Klienten kjenner sin egen identitet og sin private nøkkel.
+
 Actions:
-    H -> C : {Th, IDc, KM}pk(C)
+    H -> C : {Th, IDc, KM}pk(C)    ## Melding sekvens modelert fra ISO 11770-2 Mekansime 3
+
 Goals:
-    C authenticates H on KM
-    KM secret between H, C
+    C authenticates H on KM      ##Klienten autentisere Hub basert på den symmetriske nøkkelen KM.
+    KM secret between H, C       ## KM skal forbli hemmelig mellom Hub og Klient.
