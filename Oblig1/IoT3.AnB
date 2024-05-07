@@ -4,13 +4,13 @@ Types:
  ## Definerer grunnleggende elementer som agenter, nøkler, og funksjoner nødvendig for protokollen.
   Agent C,H,s; ##C er IoT enheten, H er Huben og s er serveren
   Number RANDs,RANDh,RANDc; ##Random nouncer
-  Function sk,mac,kdf; ##Shared Key,Message Authentication Code, Key derivation Function
+  Function sk,mac,kdf; ##Symetric Key function,Message Authentication Code, Key derivation Function
 
 Knowledge:
 ## Fastsetter initial kunnskap for hver agent, inkludert pre-delte nøkler og mac/kdf funksjoner for autentisering og nøkkel-derivasjon.
     H: C,H,s,sk(H,s),sk(H,C),mac,kdf;
     C: C,H,sk(H,C),mac,kdf;
-    s: C,H,s,sk(C,s),sk(H,s),mac,kdf;
+    s: C,H,s,sk(H,s),mac,kdf;
 ##Hindring av at en part kan kommunisere med seg selv    
 where H!=C
 Actions:

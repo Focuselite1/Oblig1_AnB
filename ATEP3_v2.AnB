@@ -1,9 +1,9 @@
 Protocol: ATEP3                
 Types:
     Agent H,C;                 ## H står for Hub og C står for Klient.
-    Number Th,IDc;             ## Th er et tidsstempel og IDc er iden til C.
+    Number Th,IDc;             ## Th er et tidsstempel og IDc er iden til Klient.
     Symmetric_key KM;          ## KM fra Kerberos utvekslingen
-    Function pk, inv;          ## Kryptografiske funksjoner,pk for kryptering med offentlig nøkkel, inv for dekryptering.
+    Function pk, inv;          ## Kryptografiske funksjoner,pk for kryptering med offentlig nøkkel, inverse for dekryptering.
 
 Knowledge:
     H : H,C,pk(C);             ## Hub'en kjenner sin egen identitet, Klientens identitet, og Klientens delte offentlige nøkkel, beskrevet i ATEP#3 som HCK
